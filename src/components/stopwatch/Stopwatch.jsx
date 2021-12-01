@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import { Observable } from 'rxjs';
 
 const Stopwatch = () => {
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
-  const [id, setId] = useState();
-  const [isStarted, setIsStarted] = useState(false);
+  const [isStartedId, setIsStartedId] = useState(false);
 
   const sec = seconds < 10 ? `0${seconds}` : seconds;
   const min = minutes < 10 ? `0${minutes}` : minutes;
@@ -21,39 +19,41 @@ const Stopwatch = () => {
     setHours(prev => prev + 1);
   }
 
+  const resetFunc = () => {
+    setHours(0);
+    setMinutes(0);
+    setSeconds(0);
+  };
+
   const timer = () => {
     const intervalId = setInterval(() => {
       setSeconds(prev => prev + 1);
     }, 1000);
-    setId(intervalId);
+    setIsStartedId(intervalId);
   };
 
   const handleToggle = () => {
-    if (!isStarted) {
-      setIsStarted(true);
+    if (!isStartedId) {
+      setIsStartedId(true);
       timer();
     } else {
-      setIsStarted(false);
-      Observable(clearInterval(id));
-      setHours(0);
-      setMinutes(0);
-      setSeconds(0);
+      setIsStartedId(false);
+      clearInterval(isStartedId);
+      resetFunc();
     }
   };
 
   const handleReset = () => {
-    setHours(0);
-    setMinutes(0);
-    setSeconds(0);
+    resetFunc();
     if (seconds > 0) {
-      Observable(clearInterval(id));
+      clearInterval(isStartedId);
       timer();
     }
   };
 
   const handleWait = () => {
-    Observable(clearInterval(id));
-    setIsStarted(false);
+    clearInterval(isStartedId);
+    setIsStartedId(false);
   };
 
   return (
